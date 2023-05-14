@@ -1,0 +1,23 @@
+{
+  "folders": [
+    {
+      "path": "./packages/extension"
+    },
+    {
+      "path": "./packages/solver"
+    },
+    {
+      "name": "root",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
+    "search.exclude": {
+      "./_": true
+    }
+  }
+}
