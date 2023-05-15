@@ -1,6 +1,10 @@
 {
   "name": "@mswp/solver",
   "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "start:dev": "tsc -w --incremental"
+  },
   "description": "",
   "keywords": [],
   "author": "",

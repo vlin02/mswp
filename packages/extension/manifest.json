@@ -1,0 +1,15 @@
+{
+    "name": "mswp",
+    "description": "plays minesweeper. that's it",
+    "version": "1.0",
+    "manifest_version": 3,
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.google.com/search?q=minewsweeper",
+                "https://www.google.com/fbx?fbx=minesweeper"
+            ],
+            "js": ["js/content.js"]
+        }
+    ]
+}
