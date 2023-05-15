@@ -1,6 +1,6 @@
 import { TextField, TextFieldProps } from "@mui/material"
 
-const SimpleTextField: React.FC<TextFieldProps> = (props) => {
+const SimpleInputField: React.FC<TextFieldProps> = (props) => {
     return (
         <TextField
             size="small"
@@ -13,4 +13,4 @@ const SimpleTextField: React.FC<TextFieldProps> = (props) => {
         />
     )
 }
-export default SimpleTextField
+export default SimpleInputField

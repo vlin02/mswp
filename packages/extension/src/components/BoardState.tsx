@@ -1,34 +1,39 @@
-import { Board, DifficultyType } from "@mswp/solver"
 import { Square } from "@mui/icons-material"
 import { Stack } from "@mui/material"
+import { BasicBoardState, BasicSquareState } from "../solver"
 
 type Props = {
-    board: Board
-    difficulty: DifficultyType
+    boardState: BasicBoardState
+    width: number
 }
 
-const DifficultyToSize = {
-    [DifficultyType.EASY]: 20,
-    [DifficultyType.MEDIUM]: 15,
-    [DifficultyType.HARD]: 10
+const stateToColor: { [key in BasicSquareState]: string } = {
+    [BasicSquareState.UNREVEALED]: "white",
+    [BasicSquareState.FLAGGED]: "#E24C1F",
+    [BasicSquareState.NUMBER]: "#E0C3A2",
+    [BasicSquareState.NUMBER_UNKNOWN]: "grey",
+    [BasicSquareState.NUMBER_NEW]: "#B3D45F"
 }
 
-const BoardState: React.FC<Props> = ({ board, difficulty }) => {
-    const fontSize = DifficultyToSize[difficulty]
-
+const BoardState: React.FC<Props> = ({ boardState, width }) => {
     return (
         <Stack direction="column" spacing={0}>
-            {board.map((row) => {
+            {boardState.map((row, i) => {
                 return (
-                    <Stack direction="row" spacing={0}>
-                        {row.map(() => (
-                            <Square
-                                style={{
-                                    color: "white",
-                                    fontSize
-                                }}
-                            />
-                        ))}
+                    <Stack direction="row" spacing={0} key={i}>
+                        {row.map((state, j) => {
+                            return (
+                                <Square
+                                    key={j}
+                                    style={{
+                                        color: stateToColor[state],
+                                        fontSize: Math.floor(
+                                            width / boardState[0].length
+                                        )
+                                    }}
+                                />
+                            )
+                        })}
                     </Stack>
                 )
             })}

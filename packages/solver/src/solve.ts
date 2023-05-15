@@ -1,7 +1,7 @@
 import { getDim } from "./board"
-import { BaseCondition } from "./csp"
+import { BaseCondition, Resolved } from "./csp"
 import { shash } from "./seq-ops"
-import { Board, CellState } from "./types"
+import { Board, BoardDim, Coordinate, SquareState } from "./types"
 import { range, checkBoundary } from "./utils"
 
 const NEIGHBOR_OFFSETS = [
@@ -15,7 +15,7 @@ const NEIGHBOR_OFFSETS = [
     [1, 1]
 ]
 
-export function getBoardConditions(board: Board) {
+export function boardToConditions(board: Board) {
     const { h, w } = getDim(board)
 
     const conds: Record<string, BaseCondition> = {}
@@ -26,12 +26,12 @@ export function getBoardConditions(board: Board) {
             const cell = board[i][j]
 
             switch (cell.state) {
-                case CellState.UNREVEALED:
+                case SquareState.UNREVEALED:
                     break
-                case CellState.FLAGGED:
+                case SquareState.FLAGGED:
                     foundCnt += 1
                     break
-                case CellState.REVEALED:
+                case SquareState.REVEALED:
                     if (cell.number === null) break
 
                     const s = []
@@ -45,10 +45,10 @@ export function getBoardConditions(board: Board) {
 
                         const nbrCell = board[i1][j1]
                         switch (nbrCell.state) {
-                            case CellState.FLAGGED:
+                            case SquareState.FLAGGED:
                                 cnt -= 1
                                 break
-                            case CellState.UNREVEALED:
+                            case SquareState.UNREVEALED:
                                 const idx = i1 * w + j1
                                 s.push(idx.toString())
                                 break
@@ -68,4 +68,51 @@ export function getBoardConditions(board: Board) {
     }
 
     return Object.values(conds)
+}
+
+export function resolvedToCoordinates(resolved: Resolved, dim: BoardDim): [Coordinate[], Coordinate[]] {
+    const { w } = dim
+    const posCords: Coordinate[] = []
+    const negCords: Coordinate[] = []
+
+    Object.entries(resolved).forEach(([el, pos]) => {
+        const idx = Number(el)
+        const cord: Coordinate = [Math.floor(idx / w), idx % w]
+        const arr = pos ? posCords: negCords
+        arr.push(cord)
+    })
+
+    return [negCords, posCords]
+}
+
+export function getSolvedStatus(board: Board) {
+    let unrevealed: Coordinate[] = []
+    let nFlagged = 0
+    let nRevealed = 0
+    let hasUnknown = false
+
+    board.forEach((row, i) =>
+        row.forEach((sq, j) => {
+            switch (sq.state) {
+                case SquareState.UNREVEALED:
+                    unrevealed.push([i, j])
+                    break
+                case SquareState.FLAGGED:
+                    nFlagged += 1
+                    break
+                case SquareState.REVEALED:
+                    nRevealed += 1
+                    hasUnknown =
+                        hasUnknown || sq.number === null
+                    break
+            }
+        })
+    )
+    
+    return {
+        unrevealed,
+        nFlagged,
+        nRevealed,
+        hasUnknown
+    }
 }

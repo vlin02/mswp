@@ -1,9 +1,13 @@
 import { CanvasImage } from "./canvas-image"
-import { Coordinate, DifficultyType } from "./types"
+import { Coordinate, DifficultyType, GamePlatform } from "./types"
 
 function fromJsname<T = HTMLElement>(jsname: string) {
     return document.querySelector(`[jsname='${jsname}']`) as T
 }
+
+export const pagePlatform = document.title.includes("Google Search")
+    ? GamePlatform.SEARCH
+    : GamePlatform.FBX
 
 export const Canvas = fromJsname<HTMLCanvasElement>("UzWXSb")
 export const AgainButton = fromJsname("AWieJ")
@@ -17,7 +21,7 @@ export const DifficultySelectors = {
     [DifficultyType.HARD]: document.querySelector(`[data-difficulty='HARD']`)
 } as { [key in DifficultyType]: HTMLElement }
 
-const CanvasCtx = Canvas.getContext("2d", {
+const CanvasCtx = Canvas && Canvas.getContext("2d", {
     willReadFrequently: true
 }) as CanvasRenderingContext2D
 

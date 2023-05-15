@@ -1,21 +1,21 @@
 export type Coordinate = [number, number]
 
-export enum CellState {
+export enum SquareState {
     UNREVEALED = "UNREVEALED",
     FLAGGED = "FLAGGED",
     REVEALED = "REVEALED"
 }
 
 export type UnrevealedCell = {
-    state: CellState.UNREVEALED
+    state: SquareState.UNREVEALED
 }
 
 export type FlaggedCell = {
-    state: CellState.FLAGGED
+    state: SquareState.FLAGGED
 }
 
 export type RevealedCell = {
-    state: CellState.REVEALED
+    state: SquareState.REVEALED
     number: number | null
 }
 
@@ -63,8 +63,8 @@ export type OcrDataset = {
     notNIndicators: { [key: string]: number[] }
 }
 
-export type FormatData = {
+export type Format = {
     platform: GamePlatform
-    difficulty: Difficulty
-    ocrDset: OcrDataset
+    difficulty: DifficultyType
+    ocrDataset: OcrDataset
 }

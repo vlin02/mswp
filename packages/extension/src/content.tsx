@@ -1,20 +1,13 @@
 import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./components/App"
+import { GamePlatform, pagePlatform } from "@mswp/solver"
 
-enum Format {
-    SEARCH = "SEARCH",
-    FBX = "FBX"
-}
-
-export const pageFormat = document.title.includes("Google Search")
-    ? Format.SEARCH
-    : Format.FBX
 
 export const ExtensionRoot = document.createElement("div")
 ExtensionRoot.style.cssText = "display:flex; height:auto"
 
-if (pageFormat === Format.SEARCH) {
+if (pagePlatform === GamePlatform.SEARCH) {
     const GameContainer = document.querySelector(
         `[class='AU64fe zsYMMe TUOsUe']`
     )?.firstChild as HTMLElement
@@ -23,7 +16,7 @@ if (pageFormat === Format.SEARCH) {
     GameContainer.appendChild(ExtensionRoot)
 }
 
-if (pageFormat === Format.FBX) {
+if (pagePlatform === GamePlatform.FBX) {
     document.body.style.cssText += "display:flex; block-size:fit-content"
     document.body.appendChild(ExtensionRoot)
 }

@@ -322,10 +322,8 @@ def joinKeys(indicators):
 if __name__ == "__main__":
     ocr_datasets = {}
 
-    for name, params in formats[3:]:
+    for name, params in formats:
         palette, dataset = build_all(**params)
-        Image.fromarray(palette[45:90, 45:90]).save("a.png")
-        break
         # show_indicators(params["diff"], palette, dataset["not_n_indicators"])
         # show_indicators(params["diff"], palette, dataset["unique_indicators"])
         ocr_datasets[name] = dict(

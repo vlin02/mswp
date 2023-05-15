@@ -8,23 +8,25 @@
     "@mswp/solver": "workspace:*",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.30",
-    "@types/react": "^18.2.6",
-    "@types/react-dom": "^18.2.4",
+    "process": "^0.11.10",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "react-dom": "^18.2.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start:dev": "react-scripts start & webpack -w",
     "watch": "webpack -w",
     "build": "webpack"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
+    "buffer": "^6.0.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "react-scripts": "^5.0.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.82.1",
+    "webpack-cli": "^5.1.1"
   },
   "browserslist": {
     "production": [
@@ -37,11 +39,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "copy-webpack-plugin": "^11.0.0",
-    "ts-loader": "^9.4.2",
-    "webpack": "^5.82.1",
-    "webpack-cli": "^5.1.1"
   }
 }

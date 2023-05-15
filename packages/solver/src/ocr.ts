@@ -1,8 +1,8 @@
 import { CanvasImage } from "./canvas-image"
-import { BoardDim, Board, CellState, Coordinate, OcrDataset } from "./types"
+import { BoardDim, Board, SquareState, Coordinate, OcrDataset } from "./types"
 import { range } from "./utils"
 
-export class StatefulOCR {
+export class BoardOcr {
     board: Board
     ocrDataset: OcrDataset
     dim: BoardDim
@@ -50,7 +50,7 @@ export class StatefulOCR {
         const cell = this.board[i][j]
 
         switch (cell.state) {
-            case CellState.UNREVEALED:
+            case SquareState.UNREVEALED:
                 for (const offset of this.ocrDataset.revealedSearch) {
                     const indicator = this.#toIndicator(img, cord, offset)
                     const isRevealed =
@@ -58,14 +58,14 @@ export class StatefulOCR {
 
                     if (isRevealed) {
                         this.board[i][j] = {
-                            state: CellState.REVEALED,
+                            state: SquareState.REVEALED,
                             number: null
                         }
                         return true
                     }
                 }
                 return false
-            case CellState.REVEALED:
+            case SquareState.REVEALED:
                 const maybeN = range(7).map(() => true)
                 let eliminatedCnt = 0
                 for (const offset of this.ocrDataset.numberSearch) {

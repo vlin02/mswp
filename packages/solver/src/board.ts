@@ -1,4 +1,5 @@
-import { Coordinate, CellState, Board, BoardDim } from "./types"
+import { clickCanvas } from "./game-ui"
+import { Coordinate, SquareState, Board, BoardDim } from "./types"
 import { range } from "./utils"
 
 export function initBoard(dim: BoardDim) {
@@ -7,7 +8,7 @@ export function initBoard(dim: BoardDim) {
     const state: Board = range(h).map(() => {
         return range(w).map(() => {
             return {
-                state: CellState.UNREVEALED
+                state: SquareState.UNREVEALED
             }
         })
     })
@@ -33,11 +34,11 @@ export function printBoard(
     board.forEach((row, i) => {
         const charRow = row.map((cell) => {
             switch (cell.state) {
-                case CellState.FLAGGED:
+                case SquareState.FLAGGED:
                     return "F"
-                case CellState.UNREVEALED:
+                case SquareState.UNREVEALED:
                     return " "
-                case CellState.REVEALED:
+                case SquareState.REVEALED:
                     return cell.number === null ? "?" : cell.number.toString()
             }
         })
@@ -68,6 +69,11 @@ export function getDim(board: any[][]): BoardDim {
 export function boardCenter(dim: BoardDim): [number, number] {
     const { h, w } = dim
     return [Math.floor(h / 2), Math.floor(w / 2)]
+}
+
+export function clickSquare(sqSize: number, cord: Coordinate) {
+    const [i,j] = cord
+    clickCanvas([i * sqSize, j * sqSize])
 }
 
 export function charBoardToString(charBoard: string[][]) {
