@@ -22,12 +22,12 @@ export const Formats: Record<FormatType, Format> = {
     [FormatType.FBX_HARD]: {
         platform: GamePlatform.FBX,
         difficulty: DifficultyType.HARD,
-        ocrDataset: OcrDatasets.FBX_HARD
+        ocrDataset: OcrDatasets.SEARCH_HARD
     },
     [FormatType.FBX_MEDIUM]: {
         platform: GamePlatform.FBX,
         difficulty: DifficultyType.MEDIUM,
-        ocrDataset: OcrDatasets.FBX_MEDIUM
+        ocrDataset: OcrDatasets.SEARCH_MEDIUM
     },
     [FormatType.FBX_EASY]: {
         platform: GamePlatform.FBX,

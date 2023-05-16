@@ -21,6 +21,8 @@ export const DifficultySelectors = {
     [DifficultyType.HARD]: document.querySelector(`[data-difficulty='HARD']`)
 } as { [key in DifficultyType]: HTMLElement }
 
+export const GameOverOverlay = fromJsname("Yfvsbd")
+
 const CanvasCtx = Canvas && Canvas.getContext("2d", {
     willReadFrequently: true
 }) as CanvasRenderingContext2D
@@ -57,9 +59,6 @@ export function getCanvasImage() {
     return new CanvasImage(data, h, w)
 }
 
-export function gameOverVisible() {
-    return (
-        document.querySelector(`[style='opacity: 1; visibility: visible;']`) !=
-        null
-    )
+export function gameOverOverlayVisible() {
+    return getComputedStyle(GameOverOverlay)["visibility"] === "visible"
 }

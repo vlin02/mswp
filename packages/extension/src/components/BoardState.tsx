@@ -5,6 +5,7 @@ import { BasicBoardState, BasicSquareState } from "../solver"
 type Props = {
     boardState: BasicBoardState
     width: number
+    height?: number
 }
 
 const stateToColor: { [key in BasicSquareState]: string } = {
@@ -15,7 +16,7 @@ const stateToColor: { [key in BasicSquareState]: string } = {
     [BasicSquareState.NUMBER_NEW]: "#B3D45F"
 }
 
-const BoardState: React.FC<Props> = ({ boardState, width }) => {
+const BoardState: React.FC<Props> = ({ boardState, width, height = 10000 }) => {
     return (
         <Stack direction="column" spacing={0}>
             {boardState.map((row, i) => {
@@ -30,6 +31,9 @@ const BoardState: React.FC<Props> = ({ boardState, width }) => {
                                         fontSize: Math.min(
                                             Math.floor(
                                                 width / boardState[0].length
+                                            ),
+                                            Math.floor(
+                                                height / boardState.length
                                             )
                                         )
                                     }}

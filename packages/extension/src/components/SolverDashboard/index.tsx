@@ -21,31 +21,32 @@ import SimpleInputField from "../SimpleInputField"
 import { DifficultyInfo, DifficultyType, range } from "@mswp/solver"
 import BoardState from "../BoardState"
 import { useState } from "react"
-import { BasicSquareState, SolverUpdate } from "../../solver"
+import { BasicSquareState, GameCompletition, SolverUpdate } from "../../solver"
 import useSolverController, { RunState } from "../../hooks/useSolver"
 
 import SimpleNumberField from "../NumberField"
 import {
     verifyStartSquares as validateStartSquares,
     formToConfig,
-    SettingsForm,
-    getDefaultForm
-} from "./settings-form"
+    ConfigForm,
+    getConfigFormDefault
+} from "./form"
 import useDifficultyListener from "../../hooks/useDifficulty"
+import ControllerButton from "../ControllerButton"
 
-const toMsFormat = (ms: number) => {
-    return Number(ms).toFixed(3) + " ms"
+const toMsFormat = (iters: number, ms: number) => {
+    return `${(ms).toFixed(3)} ms`
 }
 
-type ValidatedSettingsForm = {
-    values: SettingsForm
+type ValidatedConfigForm = {
+    values: ConfigForm
     validStartSquares: boolean
     valid: boolean
 }
 
 const getFormDefault = (difficulty: DifficultyType) => {
     return {
-        values: getDefaultForm(difficulty),
+        values: getConfigFormDefault(difficulty),
         validStartSquares: true,
         valid: true
     }
@@ -53,10 +54,10 @@ const getFormDefault = (difficulty: DifficultyType) => {
 
 export default function SolverDashboard() {
     const [difficulty, setDifficulty] = useState<DifficultyType>()
-    const [form, setForm] = useState<ValidatedSettingsForm>()
+    const [form, setForm] = useState<ValidatedConfigForm>()
 
     const [update, setUpdate] = useState<SolverUpdate>()
-    const [looping, setLooping] = useState(false)
+    const [looping, setLooping] = useState(true)
 
     useDifficultyListener(
         (difficulty) => {
@@ -89,7 +90,7 @@ export default function SolverDashboard() {
             })
         )
 
-    const onFormChange = (key: keyof SettingsForm) => {
+    const onFormChange = (key: keyof ConfigForm) => {
         return (e: any) => {
             const values = {
                 ...form.values,
@@ -123,7 +124,7 @@ export default function SolverDashboard() {
                     <Stack direction="row" spacing={2}>
                         <ButtonGroup variant="outlined">
                             <Tooltip
-                                title="Reset"
+                                title="reset"
                                 onClick={() => controller?.reset()}
                             >
                                 <Button
@@ -135,51 +136,47 @@ export default function SolverDashboard() {
                                 </Button>
                             </Tooltip>
                             {runState === RunState.RUNNING ? (
-                                <Tooltip title="pause">
-                                    <Button
-                                        size="medium"
-                                        color="secondary"
-                                        onClick={stop}
-                                    >
-                                        <Pause />
-                                    </Button>
-                                </Tooltip>
+                                <ControllerButton
+                                    title="Pause"
+                                    icon={<Pause />}
+                                    onClick={() => {
+                                        stop()
+                                        setUpdate((update) => {
+                                            return update
+                                                ? {
+                                                      ...update,
+                                                      completion:
+                                                          GameCompletition.STOPPED
+                                                  }
+                                                : undefined
+                                        })
+                                    }}
+                                />
                             ) : (
-                                <Tooltip title="start">
-                                    <Button
-                                        size="medium"
-                                        color="secondary"
-                                        onClick={() => controller?.start()}
-                                        disabled={
-                                            !controller ||
-                                            runState !== RunState.IDLE
-                                        }
-                                    >
-                                        <PlayArrow />
-                                    </Button>
-                                </Tooltip>
-                            )}
-                            <Tooltip title="Step">
-                                <Button
-                                    size="medium"
-                                    color="secondary"
-                                    onClick={() => controller?.step()}
+                                <ControllerButton
+                                    title="Resume"
+                                    icon={<PlayArrow />}
+                                    onClick={() => controller?.start()}
                                     disabled={
                                         !controller ||
                                         runState !== RunState.IDLE
                                     }
-                                >
-                                    <Redo />
-                                </Button>
-                            </Tooltip>
-                            <Tooltip
+                                />
+                            )}
+                            <ControllerButton
+                                title="Step"
+                                icon={<Redo />}
+                                onClick={() => controller?.step()}
+                                disabled={
+                                    !controller || runState !== RunState.IDLE
+                                }
+                            />
+                            <ControllerButton
                                 title="Loop"
+                                icon={<AllInclusive />}
+                                variant={looping ? "contained" : "outlined"}
                                 onClick={() => setLooping(!looping)}
-                            >
-                                <Button size="medium" variant={looping ? "contained": "outlined"} color="secondary">
-                                    <AllInclusive />
-                                </Button>
-                            </Tooltip>
+                            />
                         </ButtonGroup>
                         <Box position="absolute" right={8} top={8}>
                             <IconButton size="medium" color="secondary">
@@ -191,32 +188,57 @@ export default function SolverDashboard() {
                 <Stack direction="row" spacing={4}>
                     <Stack direction="column" spacing={4} width={250}>
                         <Box alignSelf="center">
-                            <BoardState boardState={boardState} width={250} />
+                            <BoardState
+                                boardState={boardState}
+                                width={250}
+                                height={
+                                    difficulty === DifficultyType.EASY
+                                        ? 175
+                                        : undefined
+                                }
+                            />
                         </Box>
                         <Stack>
                             <StatText
                                 title="Iterations"
-                                value={update ? String(update.iteration) : "- "}
+                                value={update ? String(update.iteration) : "-"}
                             />
                             <StatText
                                 title="OCR Time"
                                 value={
-                                    update ? toMsFormat(update.time.ocr) : "- "
+                                    update
+                                        ? toMsFormat(
+                                              update.iteration,
+                                              update.time.ocr
+                                          )
+                                        : "-"
                                 }
                             />
                             <StatText
                                 title="Solver Time"
                                 value={
-                                    update ? toMsFormat(update.time.csp) : "- "
+                                    update
+                                        ? toMsFormat(
+                                              update.iteration,
+                                              update.time.csp
+                                          )
+                                        : "-"
                                 }
                             />
                             <StatText
-                                title="Sleep Time"
+                                title="Wait Time"
                                 value={
                                     update
-                                        ? toMsFormat(update.time.waiting)
-                                        : "- "
+                                        ? toMsFormat(
+                                              update.iteration,
+                                              update.time.waiting
+                                          )
+                                        : "-"
                                 }
+                            />
+                            <StatText
+                                title="Status"
+                                value={update?.completion ?? "-"}
                             />
                         </Stack>
                     </Stack>
@@ -227,7 +249,7 @@ export default function SolverDashboard() {
                             onChange={onFormChange("refreshRate")}
                             helperText={
                                 Number(form.values.refreshRate) < 5
-                                    ? "<5 ms refresh rate defaults to 5"
+                                    ? "rate <5 ms defaults to 5 ms"
                                     : null
                             }
                             InputProps={{
@@ -245,7 +267,7 @@ export default function SolverDashboard() {
                             onChange={onFormChange("startDelay")}
                             helperText={
                                 Number(form.values.startDelay) < 1000
-                                    ? "<1000 ms start delay can be inconsistent"
+                                    ? "delay <1000 ms may be unstable"
                                     : null
                             }
                             InputProps={{
@@ -270,7 +292,7 @@ export default function SolverDashboard() {
                             }}
                             helperText={
                                 Number(form.values.solverDepth) > 2
-                                    ? "solver depth >2 may run slowly"
+                                    ? "depth 2 is usually sufficient"
                                     : null
                             }
                         />

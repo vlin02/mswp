@@ -5,6 +5,7 @@ import {
     DifficultyInfo,
     DifficultySelectors,
     DifficultyType,
+    GameOverOverlay,
     GamePlatform,
     PlayButton,
     clickSquare,
@@ -12,8 +13,10 @@ import {
     sleep
 } from "@mswp/solver"
 
+GameOverOverlay.style.cssText += "z-index: 1"
+
 export const ExtensionRoot = document.createElement("div")
-ExtensionRoot.style.cssText = "display:flex; height:auto"
+ExtensionRoot.style.cssText = "display:flex; height:auto;"
 
 if (pagePlatform === GamePlatform.SEARCH) {
     const GameContainer = document.querySelector(
@@ -31,8 +34,8 @@ if (pagePlatform === GamePlatform.FBX) {
 
 async function main() {
     PlayButton.click()
-    DifficultySelectors[DifficultyType.HARD].click()
-    clickSquare(DifficultyInfo[DifficultyType.HARD].sqSize, [10, 10])
+    // DifficultySelectors[DifficultyType.HARD].click()
+    // clickSquare(DifficultyInfo[DifficultyType.HARD].sqSize, [10, 10])
 }
 main()
 

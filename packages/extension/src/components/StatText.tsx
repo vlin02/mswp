@@ -6,9 +6,9 @@ type Props = {
 }
 export const StatText: React.FC<Props> = ({title, value}) => {
     return (
-        <Stack direction="row" spacing={1} justifyContent="space-between">
-            <Typography color="secondary">{title}</Typography>
-            <Typography color="secondary">{value}</Typography>
+        <Stack direction="row" spacing={.5} justifyContent="space-between">
+            <Typography color="secondary" fontSize="small">{title}</Typography>
+            <Typography color="secondary" fontSize="small">{value}</Typography>
         </Stack>
     )
 }
