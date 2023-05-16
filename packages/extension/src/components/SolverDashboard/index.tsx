@@ -7,8 +7,7 @@ import {
     Pause,
     PlayArrow,
     Redo,
-    RestartAlt,
-    Start
+    RestartAlt
 } from "@mui/icons-material"
 import {
     Button,
@@ -17,76 +16,66 @@ import {
     Stack,
     Tooltip
 } from "@mui/material"
-import { StatText } from "./StatText"
-import SimpleInputField from "./SimpleInputField"
-import {
-    DifficultyInfo,
-    DifficultyType,
-    boardCenter,
-    range
-} from "@mswp/solver"
-import BoardState from "./BoardState"
+import { StatText } from "../StatText"
+import SimpleInputField from "../SimpleInputField"
+import { DifficultyInfo, DifficultyType, range } from "@mswp/solver"
+import BoardState from "../BoardState"
 import { useState } from "react"
-import { BasicSquareState, SolverConfig, SolverUpdate } from "../solver"
-import useSolver, { RunState } from "../hooks/useSolver"
-import useDifficulty from "../hooks/useDifficulty"
+import { BasicSquareState, SolverUpdate } from "../../solver"
+import useSolverController, { RunState } from "../../hooks/useSolver"
 
-const cordListRgx = /^\[\[\d+,\d+\](,\[\d+,\d+\])*\]$/
-import SimpleNumberField from "./NumberField"
+import SimpleNumberField from "../NumberField"
+import {
+    verifyStartSquares as validateStartSquares,
+    formToConfig,
+    SettingsForm,
+    getDefaultForm
+} from "./settings-form"
+import useDifficultyListener from "../../hooks/useDifficulty"
 
-type Form = { [key in keyof SolverConfig]: string }
-type Config = { form: Form; config: SolverConfig }
-
-const formToConfig = ({
-    refreshRate,
-    startDelay,
-    solverDepth,
-    startSquares
-}: Form): SolverConfig => {
-    return {
-        refreshRate: Number(refreshRate),
-        startDelay: Number(startDelay),
-        solverDepth: Number(solverDepth),
-        startSquares: JSON.parse(startSquares)
-    }
-}
-
-const getDefaultConfig = (difficulty: DifficultyType): Config => {
-    const { dim } = DifficultyInfo[difficulty]
-
-    const form = {
-        refreshRate: String(20),
-        startDelay: String(1000),
-        solverDepth: String(2),
-        startSquares: JSON.stringify([boardCenter(dim)])
-    }
-
-    return {
-        form,
-        config: formToConfig(form)
-    }
-}
-
-const verifyStartSquares = (s: string): boolean => {
-    return s.match(cordListRgx) !== null
-}
 const toMsFormat = (ms: number) => {
     return Number(ms).toFixed(3) + " ms"
 }
 
-export default function SolverInterface() {
-    const difficulty = useDifficulty()
-    const [form, setForm] = useState<Config>(getDefaultConfig(difficulty))
+type ValidatedSettingsForm = {
+    values: SettingsForm
+    validStartSquares: boolean
+    valid: boolean
+}
+
+const getFormDefault = (difficulty: DifficultyType) => {
+    return {
+        values: getDefaultForm(difficulty),
+        validStartSquares: true,
+        valid: true
+    }
+}
+
+export default function SolverDashboard() {
+    const [difficulty, setDifficulty] = useState<DifficultyType>()
+    const [form, setForm] = useState<ValidatedSettingsForm>()
 
     const [update, setUpdate] = useState<SolverUpdate>()
     const [looping, setLooping] = useState(false)
 
-    const solver = useSolver({
-        difficulty,
-        config: form.config,
-        looping,
-        onUpdate: setUpdate
+    useDifficultyListener(
+        (difficulty) => {
+            setDifficulty(difficulty)
+            setForm(getFormDefault(difficulty))
+            setUpdate(undefined)
+        },
+        [setDifficulty, setForm, setUpdate]
+    )
+
+    const { createController, runState, stop } = useSolverController({
+        looping
     })
+
+    if (!(difficulty && form)) return null
+
+    const controller = form.valid
+        ? createController(formToConfig(form.values), difficulty, setUpdate)
+        : undefined
 
     const {
         dim: { h, w }
@@ -100,17 +89,26 @@ export default function SolverInterface() {
             })
         )
 
-    const getOnChange = (key: keyof SolverConfig) => {
-        return (e: any) =>
-            setForm((state) => {
-                const form = { ...state.form, [key]: e.target.value }
-                return {
-                    form,
-                    config: verifyStartSquares(form.startSquares)
-                        ? formToConfig(form)
-                        : state.config
-                }
+    const onFormChange = (key: keyof SettingsForm) => {
+        return (e: any) => {
+            const values = {
+                ...form.values,
+                [key]: e.target.value
+            }
+
+            const { refreshRate, startDelay, solverDepth, startSquares } =
+                values
+            const validStartSquares = validateStartSquares(startSquares)
+            const valid =
+                validStartSquares &&
+                ![refreshRate, startDelay, solverDepth].some((v) => v === "")
+
+            setForm({
+                values,
+                validStartSquares,
+                valid
             })
+        }
     }
 
     return (
@@ -124,17 +122,24 @@ export default function SolverInterface() {
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" spacing={2}>
                         <ButtonGroup variant="outlined">
-                            <Tooltip title="Reset" onClick={solver.reset}>
-                                <Button size="medium" color="secondary">
+                            <Tooltip
+                                title="Reset"
+                                onClick={() => controller?.reset()}
+                            >
+                                <Button
+                                    size="medium"
+                                    color="secondary"
+                                    disabled={!controller}
+                                >
                                     <RestartAlt />
                                 </Button>
                             </Tooltip>
-                            {solver.runState === RunState.RUNNING ? (
+                            {runState === RunState.RUNNING ? (
                                 <Tooltip title="pause">
                                     <Button
                                         size="medium"
                                         color="secondary"
-                                        onClick={solver.stop}
+                                        onClick={stop}
                                     >
                                         <Pause />
                                     </Button>
@@ -144,9 +149,10 @@ export default function SolverInterface() {
                                     <Button
                                         size="medium"
                                         color="secondary"
-                                        onClick={solver.start}
+                                        onClick={() => controller?.start()}
                                         disabled={
-                                            solver.runState !== RunState.IDLE
+                                            !controller ||
+                                            runState !== RunState.IDLE
                                         }
                                     >
                                         <PlayArrow />
@@ -157,8 +163,11 @@ export default function SolverInterface() {
                                 <Button
                                     size="medium"
                                     color="secondary"
-                                    onClick={solver.step}
-                                    disabled={solver.runState !== RunState.IDLE}
+                                    onClick={() => controller?.step()}
+                                    disabled={
+                                        !controller ||
+                                        runState !== RunState.IDLE
+                                    }
                                 >
                                     <Redo />
                                 </Button>
@@ -167,7 +176,7 @@ export default function SolverInterface() {
                                 title="Loop"
                                 onClick={() => setLooping(!looping)}
                             >
-                                <Button size="medium" color="secondary">
+                                <Button size="medium" variant={looping ? "contained": "outlined"} color="secondary">
                                     <AllInclusive />
                                 </Button>
                             </Tooltip>
@@ -191,16 +200,22 @@ export default function SolverInterface() {
                             />
                             <StatText
                                 title="OCR Time"
-                                value={update ? toMsFormat(update.time.ocr) : "- "}
+                                value={
+                                    update ? toMsFormat(update.time.ocr) : "- "
+                                }
                             />
                             <StatText
                                 title="Solver Time"
-                                value={update ? toMsFormat(update.time.csp) : "- "}
+                                value={
+                                    update ? toMsFormat(update.time.csp) : "- "
+                                }
                             />
                             <StatText
                                 title="Sleep Time"
                                 value={
-                                    update ? toMsFormat(update.time.waiting) : "- "
+                                    update
+                                        ? toMsFormat(update.time.waiting)
+                                        : "- "
                                 }
                             />
                         </Stack>
@@ -208,17 +223,14 @@ export default function SolverInterface() {
                     <Stack direction="column" spacing={2}>
                         <SimpleNumberField
                             label="Refresh Rate"
-                            value={form.form.refreshRate}
-                            onChange={getOnChange("refreshRate")}
+                            value={form.values.refreshRate}
+                            onChange={onFormChange("refreshRate")}
                             helperText={
-                                form.config.refreshRate < 5
+                                Number(form.values.refreshRate) < 5
                                     ? "<5 ms refresh rate defaults to 5"
                                     : null
                             }
                             InputProps={{
-                                inputProps: {
-                                    min: 5
-                                },
                                 endAdornment: (
                                     <InputAdornment position="start">
                                         &nbsp;ms
@@ -229,10 +241,10 @@ export default function SolverInterface() {
                         <SimpleNumberField
                             label="Start Delay"
                             inputProps={{ type: "number" }}
-                            value={form.form.startDelay}
-                            onChange={getOnChange("startDelay")}
+                            value={form.values.startDelay}
+                            onChange={onFormChange("startDelay")}
                             helperText={
-                                form.config.startDelay < 1000
+                                Number(form.values.startDelay) < 1000
                                     ? "<1000 ms start delay can be inconsistent"
                                     : null
                             }
@@ -249,15 +261,15 @@ export default function SolverInterface() {
                         />
                         <SimpleNumberField
                             label="Solver Depth"
-                            value={form.form.solverDepth}
-                            onChange={getOnChange("solverDepth")}
+                            value={form.values.solverDepth}
+                            onChange={onFormChange("solverDepth")}
                             InputProps={{
                                 inputProps: {
                                     min: 1
                                 }
                             }}
                             helperText={
-                                form.config.solverDepth > 2
+                                Number(form.values.solverDepth) > 2
                                     ? "solver depth >2 may run slowly"
                                     : null
                             }
@@ -266,8 +278,8 @@ export default function SolverInterface() {
                             id="start-squares"
                             type="text"
                             label="Start Squares"
-                            value={form.form.startSquares}
-                            onChange={getOnChange("startSquares")}
+                            value={form.values.startSquares}
+                            onChange={onFormChange("startSquares")}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="start">
@@ -276,15 +288,16 @@ export default function SolverInterface() {
                                 )
                             }}
                             helperText={
-                                verifyStartSquares(form.form.startSquares)
+                                form.validStartSquares
                                     ? null
-                                    : "must be JSON format [[x,y]...]"
+                                    : "*must be JSON format [[x,y]...]"
                             }
                         />
                         <Button
                             size="small"
                             startIcon={<Loop />}
                             color="secondary"
+                            onClick={() => setForm(getFormDefault(difficulty))}
                         >
                             default
                         </Button>

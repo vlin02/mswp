@@ -33,6 +33,12 @@ export enum BasicSquareState {
     NUMBER_UNKNOWN
 }
 
+export enum RunLevel {
+    STEP = 0,
+    START = 1,
+    RESET = 2,
+}
+
 export type BasicBoardState = BasicSquareState[][]
 
 export type SolverState = {
@@ -52,33 +58,37 @@ export type SolverUpdate = SolverState & {
 export type OnUpdate = (update: SolverUpdate) => void
 
 export class Solver {
-    cfg: SolverConfig
-    active: boolean
-    board: Board
-    ocr: BoardOcr
-    difficulty: Difficulty
-    state: SolverState
-    onUpdate: OnUpdate
+    cfg!: SolverConfig
+    active!: boolean
+    board!: Board
+    ocr!: BoardOcr
+    difficulty!: Difficulty
+    state!: SolverState
+    onUpdate!: OnUpdate
+    refresh: () => void
 
     constructor(format: Format, cfg: SolverConfig, onUpdate: OnUpdate) {
-        const { difficulty, ocrDataset } = format
-        this.difficulty = DifficultyInfo[difficulty]
-        const { dim, sqSize } = this.difficulty
+        this.refresh = () => {
+            const { difficulty, ocrDataset } = format
+            this.difficulty = DifficultyInfo[difficulty]
+            const { dim, sqSize } = this.difficulty
+            this.cfg = cfg
+            this.active = true
+            this.board = initBoard(dim)
+            this.ocr = new BoardOcr(this.board, dim, sqSize, ocrDataset)
+            this.onUpdate = onUpdate
 
-        this.cfg = cfg
-        this.active = true
-        this.board = initBoard(dim)
-        this.ocr = new BoardOcr(this.board, dim, sqSize, ocrDataset)
-        this.onUpdate = onUpdate
-
-        this.state = {
-            time: {
-                ocr: 0,
-                csp: 0,
-                waiting: 0
-            },
-            iteration: 0
+            this.state = {
+                time: {
+                    ocr: 0,
+                    csp: 0,
+                    waiting: 0
+                },
+                iteration: 0
+            }
         }
+
+        this.refresh()
     }
 
     stop() {
@@ -92,8 +102,13 @@ export class Solver {
         this.cfg.startSquares.forEach((cord) => clickSquare(sqSize, cord))
     }
 
-    async start(step: boolean = false) {
+    async start(runLevel: RunLevel) {
         const { dim, sqSize } = this.difficulty
+
+        if (runLevel >= RunLevel.RESET) {
+            await this.resetBoard()
+            await sleep(this.cfg.startDelay)
+        }
 
         while (true) {
             const img = getCanvasImage()
@@ -119,10 +134,10 @@ export class Solver {
 
             let solved = null
             if (nFlagged + unsafe.length === nBombs) {
-                safe = unrevealed
+                safe = unrevealed.filter(([i,j]) => !unsafe.some(([i1,j1]) => i === i1 && j === j1) )
                 solved = true
             } else if (nRevealed + safe.length === nSafe) {
-                unsafe = unrevealed
+                unsafe = unrevealed.filter(([i,j]) => !safe.some(([i1,j1]) => i === i1 && j === j1) )
                 solved = true
             } else if (!hasUnknown && safe.length === 0) {
                 solved = false
@@ -160,7 +175,7 @@ export class Solver {
             await sleep(this.cfg.refreshRate)
 
             const terminated =
-                !this.active || solved !== null || gameOverVisible() || step
+                !this.active || solved !== null || gameOverVisible() || runLevel < RunLevel.START 
 
             this.state.iteration += 1
             this.onUpdate({

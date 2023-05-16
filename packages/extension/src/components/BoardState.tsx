@@ -27,8 +27,10 @@ const BoardState: React.FC<Props> = ({ boardState, width }) => {
                                     key={j}
                                     style={{
                                         color: stateToColor[state],
-                                        fontSize: Math.floor(
-                                            width / boardState[0].length
+                                        fontSize: Math.min(
+                                            Math.floor(
+                                                width / boardState[0].length
+                                            )
                                         )
                                     }}
                                 />

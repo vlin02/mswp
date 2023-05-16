@@ -1,22 +1,20 @@
 import { DifficultySelectors } from "@mswp/solver"
 import { DifficultyType } from "@mswp/solver/src/types"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
-export default function useDifficulty() {
-    const [difficulty, setDifficulty] = useState(DifficultyType.MEDIUM)
-
+export default function useDifficultyListener(cb: (difficulty: DifficultyType) => void, deps: any[]) {
     useEffect(() => {
+        cb(DifficultyType.MEDIUM)
+        
         ;[
             DifficultyType.EASY,
             DifficultyType.MEDIUM,
             DifficultyType.HARD
         ].forEach((diff) => {
             DifficultySelectors[diff].addEventListener("click", () => {
-                setDifficulty(diff)
+                cb(diff)
             })
         })
-    }, [])
-
-    return difficulty
+    }, deps)
 }

@@ -1,8 +1,8 @@
 import { ThemeProvider } from "@emotion/react"
-import { Box, Button, Stack, Typography } from "@mui/material"
+import { Box, Button, Stack } from "@mui/material"
 import { useState } from "react"
 import theme from "../theme"
-import SolverInterface from "./SolverInterface"
+import SolverDashboard from "./SolverDashboard"
 
 function App() {
     const [show, setShow] = useState(true)
@@ -15,17 +15,7 @@ function App() {
                     justifyContent="center"
                     position="relative"
                 >
-                    {/* <Box position="absolute" top={12} left={12}>
-                        <Typography
-                            variant="h5"
-                            fontWeight={700}
-                            fontStyle="italic"
-                            style={{color: "white"}}
-                        >
-                            MSWP
-                        </Typography>
-                    </Box> */}
-                    <SolverInterface />
+                    <SolverDashboard />
                     <Box
                         position="absolute"
                         bottom={8}
