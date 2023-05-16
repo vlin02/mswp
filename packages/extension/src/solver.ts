@@ -161,8 +161,7 @@ export class Solver {
                 solved = false
             }
 
-            guaranteedReveal =
-                guaranteedReveal && !(safe.length > 0 || unsafe.length > 0)
+            guaranteedReveal = guaranteedReveal && nRevealed === 0
 
             unsafe.forEach(([i, j]) => {
                 this.board[i][j] = {

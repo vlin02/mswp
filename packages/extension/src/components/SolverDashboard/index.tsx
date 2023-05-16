@@ -27,42 +27,29 @@ import useSolverController, { RunState } from "../../hooks/useSolver"
 import SimpleNumberField from "../NumberField"
 import {
     verifyStartSquares as validateStartSquares,
-    formToConfig,
+    inputToConfig,
+    ConfigInput,
     ConfigForm,
     getConfigFormDefault
 } from "./form"
 import useDifficultyListener from "../../hooks/useDifficulty"
 import ControllerButton from "../ControllerButton"
 
-const toMsFormat = (iters: number, ms: number) => {
-    return `${(ms).toFixed(3)} ms`
-}
-
-type ValidatedConfigForm = {
-    values: ConfigForm
-    validStartSquares: boolean
-    valid: boolean
-}
-
-const getFormDefault = (difficulty: DifficultyType) => {
-    return {
-        values: getConfigFormDefault(difficulty),
-        validStartSquares: true,
-        valid: true
-    }
+const toMsFormat = (ms: number) => {
+    return `${ms.toFixed(3)} ms`
 }
 
 export default function SolverDashboard() {
     const [difficulty, setDifficulty] = useState<DifficultyType>()
-    const [form, setForm] = useState<ValidatedConfigForm>()
+    const [form, setForm] = useState<ConfigForm>()
 
     const [update, setUpdate] = useState<SolverUpdate>()
-    const [looping, setLooping] = useState(true)
+    const [looping, setLooping] = useState(false)
 
     useDifficultyListener(
         (difficulty) => {
             setDifficulty(difficulty)
-            setForm(getFormDefault(difficulty))
+            setForm(getConfigFormDefault(difficulty))
             setUpdate(undefined)
         },
         [setDifficulty, setForm, setUpdate]
@@ -75,7 +62,7 @@ export default function SolverDashboard() {
     if (!(difficulty && form)) return null
 
     const controller = form.valid
-        ? createController(formToConfig(form.values), difficulty, setUpdate)
+        ? createController(inputToConfig(form.input), difficulty, setUpdate)
         : undefined
 
     const {
@@ -90,10 +77,10 @@ export default function SolverDashboard() {
             })
         )
 
-    const onFormChange = (key: keyof ConfigForm) => {
+    const onFormChange = (key: keyof ConfigInput) => {
         return (e: any) => {
             const values = {
-                ...form.values,
+                ...form.input,
                 [key]: e.target.value
             }
 
@@ -105,7 +92,7 @@ export default function SolverDashboard() {
                 ![refreshRate, startDelay, solverDepth].some((v) => v === "")
 
             setForm({
-                values,
+                input: values,
                 validStartSquares,
                 valid
             })
@@ -206,33 +193,20 @@ export default function SolverDashboard() {
                             <StatText
                                 title="OCR Time"
                                 value={
-                                    update
-                                        ? toMsFormat(
-                                              update.iteration,
-                                              update.time.ocr
-                                          )
-                                        : "-"
+                                    update ? toMsFormat(update.time.ocr) : "-"
                                 }
                             />
                             <StatText
                                 title="Solver Time"
                                 value={
-                                    update
-                                        ? toMsFormat(
-                                              update.iteration,
-                                              update.time.csp
-                                          )
-                                        : "-"
+                                    update ? toMsFormat(update.time.csp) : "-"
                                 }
                             />
                             <StatText
                                 title="Wait Time"
                                 value={
                                     update
-                                        ? toMsFormat(
-                                              update.iteration,
-                                              update.time.waiting
-                                          )
+                                        ? toMsFormat(update.time.waiting)
                                         : "-"
                                 }
                             />
@@ -245,10 +219,10 @@ export default function SolverDashboard() {
                     <Stack direction="column" spacing={2}>
                         <SimpleNumberField
                             label="Refresh Rate"
-                            value={form.values.refreshRate}
+                            value={form.input.refreshRate}
                             onChange={onFormChange("refreshRate")}
                             helperText={
-                                Number(form.values.refreshRate) < 5
+                                Number(form.input.refreshRate) < 5
                                     ? "rate <5 ms defaults to 5 ms"
                                     : null
                             }
@@ -263,10 +237,10 @@ export default function SolverDashboard() {
                         <SimpleNumberField
                             label="Start Delay"
                             inputProps={{ type: "number" }}
-                            value={form.values.startDelay}
+                            value={form.input.startDelay}
                             onChange={onFormChange("startDelay")}
                             helperText={
-                                Number(form.values.startDelay) < 1000
+                                Number(form.input.startDelay) < 1000
                                     ? "delay <1000 ms may be unstable"
                                     : null
                             }
@@ -283,7 +257,7 @@ export default function SolverDashboard() {
                         />
                         <SimpleNumberField
                             label="Solver Depth"
-                            value={form.values.solverDepth}
+                            value={form.input.solverDepth}
                             onChange={onFormChange("solverDepth")}
                             InputProps={{
                                 inputProps: {
@@ -291,7 +265,7 @@ export default function SolverDashboard() {
                                 }
                             }}
                             helperText={
-                                Number(form.values.solverDepth) > 2
+                                Number(form.input.solverDepth) > 2
                                     ? "depth 2 is usually sufficient"
                                     : null
                             }
@@ -300,7 +274,7 @@ export default function SolverDashboard() {
                             id="start-squares"
                             type="text"
                             label="Start Squares"
-                            value={form.values.startSquares}
+                            value={form.input.startSquares}
                             onChange={onFormChange("startSquares")}
                             InputProps={{
                                 endAdornment: (
@@ -319,7 +293,7 @@ export default function SolverDashboard() {
                             size="small"
                             startIcon={<Loop />}
                             color="secondary"
-                            onClick={() => setForm(getFormDefault(difficulty))}
+                            onClick={() => setForm(getConfigFormDefault(difficulty))}
                         >
                             default
                         </Button>

@@ -5,6 +5,7 @@
     "manifest_version": 3,
     "content_scripts": [
         {
+            "world": "MAIN",
             "matches": [
                 "https://www.google.com/search?q=minewsweeper",
                 "https://www.google.com/fbx?fbx=minesweeper"

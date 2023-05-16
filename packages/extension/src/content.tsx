@@ -13,7 +13,12 @@ import {
     sleep
 } from "@mswp/solver"
 
+import * as mswp from "@mswp/solver"
+
 GameOverOverlay.style.cssText += "z-index: 1"
+
+//@ts-ignore
+window.mswp = mswp
 
 export const ExtensionRoot = document.createElement("div")
 ExtensionRoot.style.cssText = "display:flex; height:auto;"
@@ -33,7 +38,7 @@ if (pagePlatform === GamePlatform.FBX) {
 }
 
 async function main() {
-    PlayButton.click()
+    // PlayButton.click()
     // DifficultySelectors[DifficultyType.HARD].click()
     // clickSquare(DifficultyInfo[DifficultyType.HARD].sqSize, [10, 10])
 }

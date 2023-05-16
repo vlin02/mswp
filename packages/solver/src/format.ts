@@ -1,4 +1,4 @@
-import { Difficulty, DifficultyType, Format, FormatType, GamePlatform, OcrDataset } from "./types"
+import { DifficultyType, Format, FormatType, GamePlatform, OcrDataset } from "./types"
 import OCR_DATASETS from "./data/ocr-datasets.json"
 
 const OcrDatasets = OCR_DATASETS as unknown as Record<FormatType, OcrDataset>
@@ -22,12 +22,12 @@ export const Formats: Record<FormatType, Format> = {
     [FormatType.FBX_HARD]: {
         platform: GamePlatform.FBX,
         difficulty: DifficultyType.HARD,
-        ocrDataset: OcrDatasets.SEARCH_HARD
+        ocrDataset: OcrDatasets.FBX_HARD
     },
     [FormatType.FBX_MEDIUM]: {
         platform: GamePlatform.FBX,
         difficulty: DifficultyType.MEDIUM,
-        ocrDataset: OcrDatasets.SEARCH_MEDIUM
+        ocrDataset: OcrDatasets.FBX_MEDIUM
     },
     [FormatType.FBX_EASY]: {
         platform: GamePlatform.FBX,

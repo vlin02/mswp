@@ -1,18 +1,18 @@
 import { DifficultyType, DifficultyInfo, boardCenter } from "@mswp/solver"
 import { SolverConfig } from "../../solver"
 
-export type ConfigForm = {
+export type ConfigInput = {
     refreshRate: string
     startDelay: string
     solverDepth: string
     startSquares: string
 }
 
-export const getConfigFormDefault = (difficulty: DifficultyType): ConfigForm => {
+export const getConfigInputDefault = (difficulty: DifficultyType): ConfigInput => {
     const { dim } = DifficultyInfo[difficulty]
 
     return {
-        refreshRate: String(20),
+        refreshRate: String(40),
         startDelay: String(1000),
         solverDepth: String(2),
         startSquares: JSON.stringify([boardCenter(dim)])
@@ -25,12 +25,12 @@ export const verifyStartSquares = (s: string): boolean => {
     return s.match(cordListRgx) !== null
 }
 
-export const formToConfig = ({
+export const inputToConfig = ({
     refreshRate,
     startDelay,
     solverDepth,
     startSquares
-}: ConfigForm): SolverConfig => {
+}: ConfigInput): SolverConfig => {
     return {
         refreshRate: Number(refreshRate),
         startDelay: Number(startDelay),
@@ -39,15 +39,15 @@ export const formToConfig = ({
     }
 }
 
-export type ValidatedConfigForm = {
-    values: ConfigForm
+export type ConfigForm = {
+    input: ConfigInput
     validStartSquares: boolean
     valid: boolean
 }
 
-export const getValidatedConfigFormDefault = (difficulty: DifficultyType) => {
+export const getConfigFormDefault = (difficulty: DifficultyType): ConfigForm => {
     return {
-        values: getConfigFormDefault(difficulty),
+        input: getConfigInputDefault(difficulty),
         validStartSquares: true,
         valid: true
     }
