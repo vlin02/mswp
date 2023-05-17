@@ -8,7 +8,7 @@ type Props = {
     height?: number
 }
 
-const stateToColor: { [key in BasicSquareState]: string } = {
+export const stateToColor: { [key in BasicSquareState]: string } = {
     [BasicSquareState.UNREVEALED]: "white",
     [BasicSquareState.FLAGGED]: "#E24C1F",
     [BasicSquareState.NUMBER]: "#E0C3A2",

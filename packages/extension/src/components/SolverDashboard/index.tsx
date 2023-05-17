@@ -110,18 +110,11 @@ export default function SolverDashboard() {
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="row" spacing={2}>
                         <ButtonGroup variant="outlined">
-                            <Tooltip
-                                title="reset"
+                            <ControllerButton
+                                title="Reset"
+                                icon={<RestartAlt />}
                                 onClick={() => controller?.reset()}
-                            >
-                                <Button
-                                    size="medium"
-                                    color="secondary"
-                                    disabled={!controller}
-                                >
-                                    <RestartAlt />
-                                </Button>
-                            </Tooltip>
+                            />
                             {runState === RunState.RUNNING ? (
                                 <ControllerButton
                                     title="Pause"
@@ -165,11 +158,6 @@ export default function SolverDashboard() {
                                 onClick={() => setLooping(!looping)}
                             />
                         </ButtonGroup>
-                        <Box position="absolute" right={8} top={8}>
-                            <IconButton size="medium" color="secondary">
-                                <Help />
-                            </IconButton>
-                        </Box>
                     </Stack>
                 </Stack>
                 <Stack direction="row" spacing={4}>
@@ -293,7 +281,9 @@ export default function SolverDashboard() {
                             size="small"
                             startIcon={<Loop />}
                             color="secondary"
-                            onClick={() => setForm(getConfigFormDefault(difficulty))}
+                            onClick={() =>
+                                setForm(getConfigFormDefault(difficulty))
+                            }
                         >
                             default
                         </Button>
