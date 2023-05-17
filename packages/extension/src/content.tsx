@@ -15,38 +15,42 @@ import {
 
 import * as mswp from "@mswp/solver"
 
-GameOverOverlay.style.cssText += "z-index: 1"
+// GameOverOverlay.style.cssText += "z-index: 1"
 
-//@ts-ignore
-window.mswp = mswp
+// //@ts-ignore
+// window.mswp = mswp
 
-export const ExtensionRoot = document.createElement("div")
-ExtensionRoot.style.cssText = "display:flex; height:auto;"
+// export const ExtensionRoot = document.createElement("div")
+// ExtensionRoot.style.cssText = "display:flex; height:auto;"
 
-if (pagePlatform === GamePlatform.SEARCH) {
-    const GameContainer = document.querySelector(
-        `[class='AU64fe zsYMMe TUOsUe']`
-    )?.firstChild as HTMLElement
-    GameContainer.style.cssText += "display:flex"
+// if (pagePlatform === GamePlatform.SEARCH) {
+//     const GameContainer = document.querySelector(
+//         `[class='AU64fe zsYMMe TUOsUe']`
+//     )?.firstChild as HTMLElement
+//     GameContainer.style.cssText += "display:flex"
 
-    GameContainer.appendChild(ExtensionRoot)
-}
+//     GameContainer.appendChild(ExtensionRoot)
+// }
 
-if (pagePlatform === GamePlatform.FBX) {
-    document.body.style.cssText += "display:flex; block-size:fit-content"
-    document.body.appendChild(ExtensionRoot)
-}
+// if (pagePlatform === GamePlatform.FBX) {
+//     document.body.style.cssText += "display:flex; block-size:fit-content"
+//     document.body.appendChild(ExtensionRoot)
+// }
 
 async function main() {
+    await sleep(2000)
+    let t = performance.now()
+    await sleep(2)
+    console.log(performance.now() - t)
     // PlayButton.click()
     // DifficultySelectors[DifficultyType.HARD].click()
     // clickSquare(DifficultyInfo[DifficultyType.HARD].sqSize, [10, 10])
 }
 main()
 
-const root = ReactDOM.createRoot(ExtensionRoot)
-root.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
-)
+// const root = ReactDOM.createRoot(ExtensionRoot)
+// root.render(
+//     <React.StrictMode>
+//         <App />
+//     </React.StrictMode>
+// )

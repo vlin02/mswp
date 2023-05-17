@@ -21,6 +21,8 @@ export const DifficultySelectors = {
     [DifficultyType.HARD]: document.querySelector(`[data-difficulty='HARD']`)
 } as { [key in DifficultyType]: HTMLElement }
 
+export const Timer = fromJsname("ajb2Y")
+
 export const GameOverOverlay = fromJsname("Yfvsbd")
 
 const CanvasCtx = Canvas && Canvas.getContext("2d", {

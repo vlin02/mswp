@@ -12,10 +12,10 @@ export const getConfigInputDefault = (difficulty: DifficultyType): ConfigInput =
     const { dim } = DifficultyInfo[difficulty]
 
     return {
-        refreshRate: String(40),
-        startDelay: String(1000),
+        refreshRate: String(5),
+        startDelay: String(0),
         solverDepth: String(2),
-        startSquares: JSON.stringify([boardCenter(dim)])
+        startSquares: "[[10,12],[5,5],[15,15]]"
     }
 }
 
