@@ -15,13 +15,13 @@ export const getConfigInputDefault = (difficulty: DifficultyType): ConfigInput =
         refreshRate: String(5),
         startDelay: String(0),
         solverDepth: String(2),
-        startSquares: "[[10,12],[5,5],[15,15]]"
+        startSquares: JSON.stringify([boardCenter(dim)])
     }
 }
 
 const cordListRgx = /^\[\[\d+,\d+\](,\[\d+,\d+\])*\]$/
 
-export const verifyStartSquares = (s: string): boolean => {
+export const validateStartSquares = (s: string): boolean => {
     return s.match(cordListRgx) !== null
 }
 

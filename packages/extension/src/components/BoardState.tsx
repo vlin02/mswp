@@ -1,6 +1,7 @@
 import { Square } from "@mui/icons-material"
-import { Stack } from "@mui/material"
+import { Box, Stack } from "@mui/material"
 import { BasicBoardState, BasicSquareState } from "../solver"
+import { BoardSquare } from "./BoardSquare"
 
 type Props = {
     boardState: BasicBoardState
@@ -17,33 +18,32 @@ export const stateToColor: { [key in BasicSquareState]: string } = {
 }
 
 const BoardState: React.FC<Props> = ({ boardState, width, height = 10000 }) => {
+    const totalSize = Math.min(
+        Math.floor(width / boardState[0].length),
+        Math.floor(height / boardState.length)
+    )
+
     return (
-        <Stack direction="column" spacing={0}>
-            {boardState.map((row, i) => {
-                return (
-                    <Stack direction="row" spacing={0} key={i}>
-                        {row.map((state, j) => {
-                            return (
-                                <Square
-                                    key={j}
-                                    style={{
-                                        color: stateToColor[state],
-                                        fontSize: Math.min(
-                                            Math.floor(
-                                                width / boardState[0].length
-                                            ),
-                                            Math.floor(
-                                                height / boardState.length
-                                            )
-                                        )
-                                    }}
-                                />
-                            )
-                        })}
-                    </Stack>
-                )
+        <Box
+            position="relative"
+            display="block"
+            height={totalSize * boardState.length}
+            width={totalSize * boardState[0].length}
+        >
+            {boardState.flatMap((row, i) => {
+                return row.map((state, j) => {
+                    return (
+                        <BoardSquare
+                            key={i * 24 + j}
+                            i={i}
+                            j={j}
+                            size={totalSize}
+                            color={stateToColor[state]}
+                        />
+                    )
+                })
             })}
-        </Stack>
+        </Box>
     )
 }
 

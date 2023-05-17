@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { GameCompletition, OnUpdate, RunLevel, Solver, SolverConfig } from "../solver"
+import { GameCompletition, OnUpdate, RunMode, Solver, SolverConfig } from "../solver"
 import { DifficultyType, Formats, pagePlatform } from "@mswp/solver"
 
 export enum RunState {
@@ -9,17 +9,17 @@ export enum RunState {
 }
 
 type Props = {
+    completion: GameCompletition
     looping: boolean
 }
 
-export default function useSolverController({ looping }: Props) {
+
+export default function useSolverController({ completion, looping }: Props) {
     const [runState, setRunState] = useState<RunState>(RunState.IDLE)
     const [active, setActive] = useState<Solver>()
-    const [completion, setCompletion] = useState<GameCompletition>()
 
     useEffect(() => {
         if (completion === undefined) return
-        setCompletion(undefined)
 
         if (!active) {
             throw Error("must have active")
@@ -31,7 +31,7 @@ export default function useSolverController({ looping }: Props) {
         }
 
         active.refresh()
-        active.start(RunLevel.RESET)
+        active.start(RunMode.RESET)
     }, [completion, active, runState, looping])
 
     const stop = () => {
@@ -76,21 +76,21 @@ export default function useSolverController({ looping }: Props) {
                 setRunState(RunState.STEPPING)
 
                 const solver = newSolver()
-                solver.start(RunLevel.STEP)
+                solver.start(RunMode.STEP)
             }
 
             const start = () => {
                 setRunState(RunState.RUNNING)
 
                 const solver = newSolver()
-                solver.start(RunLevel.START)
+                solver.start(RunMode.START)
             }
 
             const reset = async () => {
                 setRunState(RunState.RUNNING)
 
                 const solver = newSolver()
-                solver.start(RunLevel.RESET)
+                solver.start(RunMode.RESET)
             }
 
             return {
