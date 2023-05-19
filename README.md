@@ -1,9 +1,9 @@
 # MSWP
 
-Fast minesweeper solver library and extension for Google Minesweeper
+Fast minesweeper solver library and TAS extension for Google Minesweeper
 
-## Demo
-https://github.com/vlin02/mswp/assets/41597231/bdf8a99c-769c-4152-8425-034a109ffa0c
+## Demo - 0sec Hard
+![0sec-hard](https://github.com/vlin02/mswp/assets/41597231/0364021d-0682-4d24-976b-cf99bf68dfd0)
 
 ## Installation
 
@@ -14,7 +14,7 @@ https://github.com/vlin02/mswp/assets/41597231/bdf8a99c-769c-4152-8425-034a109ff
 - Drag `mswp-main/builds/mswp-chrome` anywhere on the page to import it
 
 ## Google Minesweeper Stats
-The solver is primarily bottlenecked in solve time by the "revealing" animation of each number square.
+The solver is primarily bottlenecked in solve time by the "revealing" animation of each number square
 
 Consistently solves:
 - easy: 0s

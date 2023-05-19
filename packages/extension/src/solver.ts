@@ -203,12 +203,6 @@ export class Solver {
 
             safe.forEach((cord) => clickSquare(sqSize, cord))
 
-            t = performance.now()
-            await sleep(this.cfg.refreshRate)
-            this.state.time.waiting += performance.now() - t
-
-            if (!this.active) return
-
             const getCompletion = () => {
                 if (solved === true) return GameCompletition.SOLVED
                 if (solved === false && !guaranteedReveal)
@@ -228,6 +222,12 @@ export class Solver {
             })
 
             if (completion !== GameCompletition.IN_PROGRESS) return
+
+            t = performance.now()
+            await sleep(this.cfg.refreshRate)
+            this.state.time.waiting += performance.now() - t
+
+            if (!this.active) return
         }
     }
 }

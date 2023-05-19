@@ -7,7 +7,7 @@ interface Props extends ButtonProps {
 }
 export default function ControllerButton({ title, icon, ...rest }: Props) {
     return (
-        <Tooltip title={title} placement="top">
+        <Tooltip title={title}>
             <Button size="medium" color="secondary" {...rest}>
                 {icon}
             </Button>

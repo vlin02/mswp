@@ -1,9 +1,9 @@
 import {
-    RestartAlt,
     Pause,
     PlayArrow,
     Redo,
-    AllInclusive
+    AllInclusive,
+    Replay
 } from "@mui/icons-material"
 import { Stack, ButtonGroup } from "@mui/material"
 import ControllerButton from "./ControllerButton"
@@ -79,8 +79,8 @@ export const ControllerButtons: React.FC<Props> = React.memo(
             <Stack direction="row" spacing={2}>
                 <ButtonGroup variant="outlined">
                     <ControllerButton
-                        title="Reset"
-                        icon={<RestartAlt />}
+                        title="Start new"
+                        icon={<Replay />}
                         onClick={() => onStart(RunMode.RESET)}
                         disabled={!createSolver}
                     />
