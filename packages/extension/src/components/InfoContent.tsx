@@ -24,7 +24,7 @@ export const InfoContent: React.FC = () => {
                     <Stack direction="row" spacing={1} alignItems="center">
                         <PlayArrow />
                         <Typography variant="body2">
-                            Resume current game sup
+                            Resume current game
                         </Typography>
                     </Stack>
                     <Stack direction="row" spacing={1} alignItems="center">
