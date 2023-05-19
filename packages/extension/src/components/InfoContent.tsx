@@ -1,7 +1,7 @@
 import { DialogContent, Stack, Typography } from "@mui/material"
-import { stateToColor } from "./BoardState"
 import { BasicSquareState } from "../solver"
 import { Square } from "@mui/icons-material"
+import { stateToColor } from "../const"
 
 export const InfoContent: React.FC = () => {
     return (

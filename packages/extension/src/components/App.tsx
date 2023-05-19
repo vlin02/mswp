@@ -42,16 +42,14 @@ function App() {
                     show
                 </Button>
             )}
-            {
-                <Dialog
-                    open={showHelp}
-                    onClose={() => setShowHelp(false)}
-                    fullWidth={true}
-                    maxWidth="sm"
-                >
-                    <InfoContent />
-                </Dialog>
-            }
+            <Dialog
+                open={showHelp}
+                onClose={() => setShowHelp(false)}
+                fullWidth={true}
+                maxWidth="sm"
+            >
+                <InfoContent />
+            </Dialog>
         </ThemeProvider>
     )
 }

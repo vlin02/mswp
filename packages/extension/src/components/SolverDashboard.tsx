@@ -27,6 +27,7 @@ import useDifficultyListener from "../hooks/useDifficulty"
 import { ConfigFormView } from "./ConfigForm"
 import { ControllerButtons } from "./ControllerButtons"
 import { BoardState } from "./BoardState"
+import { INITIAL_DIFFICULTY } from "../const"
 
 const toMsFormat = (ms: number) => {
     return `${ms.toFixed(3)} ms`
@@ -34,7 +35,7 @@ const toMsFormat = (ms: number) => {
 
 export default function SolverDashboard() {
     const [difficulty, setDifficulty] = useState<DifficultyType>(
-        DifficultyType.HARD
+        INITIAL_DIFFICULTY
     )
     const [form, setForm] = useState<ConfigForm>(
         getConfigFormDefault(DifficultyType.HARD)

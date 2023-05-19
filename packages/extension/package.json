@@ -15,9 +15,9 @@
     "setimmediate": "^1.0.5"
   },
   "scripts": {
-    "start": "TSC_COMPILE_ON_ERROR=true ESLINT_NO_DEV_ERRORS=true react-scripts start",
-    "start:dev": "webpack -w",
-    "build": "webpack"
+    "start:dev": "TSC_COMPILE_ON_ERROR=true ESLINT_NO_DEV_ERRORS=true react-scripts start",
+    "webpack:dev": "webpack --mode=development -w",
+    "webpack:prod": "webpack --mode=production"
   },
   "devDependencies": {
     "@types/react": "^18.0.14",

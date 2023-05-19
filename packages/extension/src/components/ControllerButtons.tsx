@@ -6,13 +6,18 @@ import {
     AllInclusive
 } from "@mui/icons-material"
 import { Stack, ButtonGroup } from "@mui/material"
-import { RunState } from "../hooks/useSolver"
 import ControllerButton from "./ControllerButton"
 import React, { useCallback, useEffect, useState } from "react"
 import {
     RunMode,
     Solver,
 } from "../solver"
+
+enum RunState {
+    RUNNING,
+    STEPPING,
+    IDLE
+}
 
 type Props = {
     completionAck?: () => void

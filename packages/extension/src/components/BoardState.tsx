@@ -1,21 +1,14 @@
-import { BasicBoardState, BasicSquareState } from "../solver"
+import { BasicBoardState } from "../solver"
 import { useEffect, useMemo, useRef } from "react"
 import { DifficultyInfo, DifficultyType, range } from "@mswp/solver"
 import { Box } from "@mui/material"
+import { stateToColor } from "../const"
 
 type Props = {
     boardState: BasicBoardState
     difficulty: DifficultyType
     maxHeight: number
     maxWidth: number
-}
-
-const stateToColor: { [key in BasicSquareState]: string } = {
-    [BasicSquareState.UNREVEALED]: "white",
-    [BasicSquareState.FLAGGED]: "#E24C1F",
-    [BasicSquareState.NUMBER]: "#E0C3A2",
-    [BasicSquareState.NUMBER_UNKNOWN]: "grey",
-    [BasicSquareState.NUMBER_NEW]: "#B3D45F"
 }
 
 export const BoardState: React.FC<Props> = ({
