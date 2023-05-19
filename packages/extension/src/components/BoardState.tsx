@@ -44,7 +44,7 @@ export const BoardState: React.FC<Props> = ({
         )
 
         const size = Math.floor(netSize * 0.8)
-        const margin = Math.floor(netSize * 0.1)
+        const margin = Math.max(Math.floor(netSize * 0.1), 1)
 
         const trueSize = size + margin * 2
 
