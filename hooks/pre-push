@@ -1,9 +1,11 @@
 GIT_ROOT=$(git rev-parse --show-toplevel)
 
-cd $GIT_ROOT/packages/extension
-pnpm webpack:prod
+if git diff --cached --quiet -- packages; then
+    cd $GIT_ROOT/packages/extension
+    pnpm webpack:prod
 
-cp dist/prod/* $GIT_ROOT/builds/mswp-chrome
+    cp dist/prod/* $GIT_ROOT/builds/mswp-chrome
 
-git add --all
-git commit --amend --no-edit
+    git add --all
+    git commit --amend --no-edit
+fi
