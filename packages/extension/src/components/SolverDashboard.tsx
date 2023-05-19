@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box"
 import { Stack } from "@mui/material"
-import { StatLine } from "../StatText"
+import { StatLine } from "./StatLine"
 import {
     DifficultyInfo,
     DifficultyType,
@@ -8,14 +8,13 @@ import {
     pagePlatform,
     range
 } from "@mswp/solver"
-import BoardState from "../BoardState"
 import { useCallback, useMemo, useState } from "react"
 import {
     BasicSquareState,
     GameCompletition,
     Solver,
     SolverUpdate
-} from "../../solver"
+} from "../solver"
 
 import {
     validateStartSquares,
@@ -23,10 +22,11 @@ import {
     ConfigInput,
     ConfigForm,
     getConfigFormDefault
-} from "../ConfigForm/form"
-import useDifficultyListener from "../../hooks/useDifficulty"
-import { ConfigFormView } from "../ConfigForm"
-import { ControllerButtons } from "../ControllerButtons"
+} from "./ConfigForm/form"
+import useDifficultyListener from "../hooks/useDifficulty"
+import { ConfigFormView } from "./ConfigForm"
+import { ControllerButtons } from "./ControllerButtons"
+import { BoardState } from "./BoardState"
 
 const toMsFormat = (ms: number) => {
     return `${ms.toFixed(3)} ms`
@@ -45,9 +45,9 @@ export default function SolverDashboard() {
 
     useDifficultyListener(
         (difficulty) => {
+            setUpdate(undefined)
             setDifficulty(difficulty)
             setForm(getConfigFormDefault(difficulty))
-            setUpdate(undefined)
         },
         [setDifficulty, setForm, setUpdate]
     )
@@ -63,7 +63,7 @@ export default function SolverDashboard() {
                 return BasicSquareState.UNREVEALED
             })
         )
-
+    
     const onFormChange = useCallback(
         (key: keyof ConfigInput) => {
             return (e: any) => {
@@ -142,13 +142,14 @@ export default function SolverDashboard() {
                     <Stack direction="column" spacing={4} width={250}>
                         <Box alignSelf="center">
                             <BoardState
+                                difficulty={difficulty}
                                 boardState={boardState}
-                                width={250}
-                                height={
+                                maxHeight={
                                     difficulty === DifficultyType.EASY
-                                        ? 175
-                                        : undefined
+                                        ? 150
+                                        : 250
                                 }
+                                maxWidth={250}
                             />
                         </Box>
                         <Stack>

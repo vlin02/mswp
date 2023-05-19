@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@emotion/react"
 import { Box, Button, Dialog, IconButton, Stack } from "@mui/material"
-import { useState } from "react"
+import { forwardRef, useEffect, useRef, useState } from "react"
 import theme from "../theme"
 import { Help } from "@mui/icons-material"
 import { InfoContent } from "./InfoContent"

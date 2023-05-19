@@ -1,15 +1,16 @@
-import { Square } from "@mui/icons-material"
-import { Box, Stack } from "@mui/material"
 import { BasicBoardState, BasicSquareState } from "../solver"
-import { BoardSquare } from "./BoardSquare"
+import { useEffect, useMemo, useRef } from "react"
+import { DifficultyInfo, DifficultyType, range } from "@mswp/solver"
+import { Box } from "@mui/material"
 
 type Props = {
     boardState: BasicBoardState
-    width: number
-    height?: number
+    difficulty: DifficultyType
+    maxHeight: number
+    maxWidth: number
 }
 
-export const stateToColor: { [key in BasicSquareState]: string } = {
+const stateToColor: { [key in BasicSquareState]: string } = {
     [BasicSquareState.UNREVEALED]: "white",
     [BasicSquareState.FLAGGED]: "#E24C1F",
     [BasicSquareState.NUMBER]: "#E0C3A2",
@@ -17,34 +18,67 @@ export const stateToColor: { [key in BasicSquareState]: string } = {
     [BasicSquareState.NUMBER_NEW]: "#B3D45F"
 }
 
-const BoardState: React.FC<Props> = ({ boardState, width, height = 10000 }) => {
-    const totalSize = Math.min(
-        Math.floor(width / boardState[0].length),
-        Math.floor(height / boardState.length)
+export const BoardState: React.FC<Props> = ({
+    difficulty,
+    maxHeight,
+    maxWidth,
+    boardState
+}) => {
+    const ref = useRef<(HTMLDivElement | null)[][]>(
+        range(20).map(() => range(24).map(() => null))
     )
 
-    return (
-        <Box
-            position="relative"
-            display="block"
-            height={totalSize * boardState.length}
-            width={totalSize * boardState[0].length}
-        >
-            {boardState.flatMap((row, i) => {
-                return row.map((state, j) => {
-                    return (
-                        <BoardSquare
-                            key={i * 24 + j}
-                            i={i}
-                            j={j}
-                            size={totalSize}
-                            color={stateToColor[state]}
-                        />
-                    )
-                })
-            })}
-        </Box>
-    )
+    useEffect(() => {
+        boardState.forEach((row, i) => {
+            row.forEach((state, j) => {
+                const cellRef = ref.current[i][j]
+                if (cellRef == null) return
+                const nxt = stateToColor[state]
+                if (cellRef.style.backgroundColor === nxt) return
+                cellRef.style.backgroundColor = nxt
+            })
+        })
+    }, [boardState])
+
+    const grid = useMemo(() => {
+        const {
+            dim: { h, w }
+        } = DifficultyInfo[difficulty]
+
+        const netSize = Math.min(
+            Math.floor(maxHeight / h),
+            Math.floor(maxWidth / w)
+        )
+
+        const size = netSize * 0.8
+        const margin = netSize * 0.1
+
+        return (
+            <Box position="relative" display="block" height={netSize * h} width={netSize * w}>
+                {[...Array(h)].flatMap((_, i) => {
+                    return [...Array(w)].map((_, j) => {
+                        return (
+                            <div
+                                ref={(el) => {
+                                    ref.current[i][j] = el
+                                }}
+                                key={i * w + j}
+                                style={{
+                                    height: size,
+                                    width: size,
+                                    margin,
+                                    position: "absolute",
+                                    top: i * netSize,
+                                    left: j * netSize,
+                                    backgroundColor: "white"
+                                }}
+                            />
+                        )
+                    })
+                })}
+            </Box>
+        )
+    }, [ref, difficulty])
+
+    return grid
 }
-
-export default BoardState

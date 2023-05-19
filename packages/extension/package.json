@@ -15,8 +15,8 @@
     "setimmediate": "^1.0.5"
   },
   "scripts": {
-    "start:dev": "react-scripts start & webpack -w",
-    "watch": "webpack -w",
+    "start": "TSC_COMPILE_ON_ERROR=true ESLINT_NO_DEV_ERRORS=true react-scripts start",
+    "start:dev": "webpack -w",
     "build": "webpack"
   },
   "devDependencies": {

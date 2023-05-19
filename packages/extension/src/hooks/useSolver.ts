@@ -59,17 +59,6 @@ export default function useSolverController({ completion, looping }: Props) {
 
                 active?.stop()
 
-                const solver = new Solver(format, config, (update) => {
-                    
-                    if (update.completion !== GameCompletition.IN_PROGRESS) {
-                        setCompletion(update.completion)
-                    }
-
-                    onUpdate(update)
-                })
-
-                setActive(solver)
-                return solver
             }
 
             const step = () => {

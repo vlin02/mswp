@@ -5,8 +5,6 @@ import { useEffect } from "react"
 
 export default function useDifficultyListener(cb: (difficulty: DifficultyType) => void, deps: any[]) {
     useEffect(() => {
-        cb(DifficultyType.HARD)
-        
         ;[
             DifficultyType.EASY,
             DifficultyType.MEDIUM,

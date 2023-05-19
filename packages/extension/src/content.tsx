@@ -2,16 +2,12 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import App from "./components/App"
 import {
-    DifficultyInfo,
     DifficultySelectors,
     DifficultyType,
     GameOverOverlay,
     GamePlatform,
-    PlayButton,
-    clickSquare,
     SoundButton,
-    pagePlatform,
-    sleep
+    pagePlatform
 } from "@mswp/solver"
 import "setimmediate"
 import * as mswp from "@mswp/solver"
@@ -40,7 +36,6 @@ if (pagePlatform === GamePlatform.FBX) {
 }
 
 SoundButton.click()
-
 
 DifficultySelectors[DifficultyType.HARD].click()
 
