@@ -1,6 +1,6 @@
 GIT_ROOT=$(git rev-parse --show-toplevel)
 
-if git diff --cached --quiet -- packages; then
+if ! git diff --cached --quiet -- packages; then
     cd $GIT_ROOT/packages/extension
     pnpm webpack:prod
 
