@@ -4,3 +4,6 @@ cd $GIT_ROOT/packages/extension
 pnpm webpack:prod
 
 cp dist/prod/* $GIT_ROOT/builds/mswp-chrome
+
+git add --all
+git commit --amend --no-edit
