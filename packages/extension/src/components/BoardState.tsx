@@ -43,11 +43,13 @@ export const BoardState: React.FC<Props> = ({
             Math.floor(maxWidth / w)
         )
 
-        const size = netSize * 0.8
-        const margin = netSize * 0.1
+        const size = Math.floor(netSize * 0.8)
+        const margin = Math.floor(netSize * 0.1)
+
+        const trueSize = size + margin * 2
 
         return (
-            <Box position="relative" display="block" height={netSize * h} width={netSize * w}>
+            <Box position="relative" display="block" height={trueSize * h} width={trueSize * w}>
                 {[...Array(h)].flatMap((_, i) => {
                     return [...Array(w)].map((_, j) => {
                         return (
@@ -61,8 +63,8 @@ export const BoardState: React.FC<Props> = ({
                                     width: size,
                                     margin,
                                     position: "absolute",
-                                    top: i * netSize,
-                                    left: j * netSize,
+                                    top: trueSize * i,
+                                    left: trueSize * j,
                                     backgroundColor: "white"
                                 }}
                             />

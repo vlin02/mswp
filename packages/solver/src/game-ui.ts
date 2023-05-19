@@ -25,9 +25,7 @@ export const Timer = fromJsname("ajb2Y")
 
 export const GameOverOverlay = fromJsname("Yfvsbd")
 
-const CanvasCtx = Canvas && Canvas.getContext("2d", {
-    willReadFrequently: true
-}) as CanvasRenderingContext2D
+const CanvasCtx = Canvas && Canvas.getContext("2d") as CanvasRenderingContext2D
 
 export function clickCanvas(cord: Coordinate, leftClick = true) {
     const [x, y] = cord
