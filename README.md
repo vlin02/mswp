@@ -13,6 +13,12 @@ Fast minesweeper solver library and TAS chrome extension for Google Minesweeper
 - Enable Developer Mode
 - Drag `mswp-main/builds/mswp-chrome` anywhere on the page to import it
 
+## Usage
+
+- Go to either https://www.google.com/search?q=minewsweeper or https://www.google.com/fbx?fbx=minesweeper
+- The TAS popup will appear right next to the game window
+- HF
+
 ## Google Minesweeper Stats
 The solver is primarily bottlenecked in solve time by the "revealing" animation of each number square
 
