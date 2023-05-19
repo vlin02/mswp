@@ -1,3 +1,0 @@
-GIT_ROOT=$(git rev-parse --show-toplevel)
-
-sh $GIT_ROOT/scripts/mswp-chrome.sh
