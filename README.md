@@ -13,7 +13,9 @@ https://github.com/vlin02/mswp/assets/41597231/bdf8a99c-769c-4152-8425-034a109ff
 - Enable Developer Mode
 - Drag `mswp-main/builds/mswp-chrome` anywhere on the page to import it
 
-## Stats
+## Google Minesweeper Stats
+The solver is primarily bottlenecked in solve time by the "revealing" animation of each number square.
+
 Consistently solves:
 - easy: 0s
 - medium: 0s
