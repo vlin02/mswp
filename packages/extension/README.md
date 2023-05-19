@@ -9,11 +9,11 @@ The extension activates at both
 
 ### `pnpm webpack:dev`
 
-builds a development version of the chrome extension in `dist/mswp-dev` and watches for changes
+builds a development version of the chrome extension in `dist/dev` and watches for changes
 
 ### `pnpm webpack:prod`
 
-builds a production version of the chrome extension in `dist/mswp`
+builds a production version of the chrome extension in `dist/prod`
 
 ## Webpack
 

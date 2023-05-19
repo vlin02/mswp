@@ -33,7 +33,7 @@ const DEVELOPMENT = {
         extensions: [".tsx", ".ts", ".js"]
     },
     output: {
-        path: path.join(__dirname, "dist/mswp-dev"),
+        path: path.join(__dirname, "dist/dev"),
         filename: "[name].js"
     }
 }
@@ -65,7 +65,7 @@ const PRODUCTION = {
         extensions: [".tsx", ".ts", ".js"]
     },
     output: {
-        path: path.join(__dirname, "dist/mswp"),
+        path: path.join(__dirname, "dist/prod"),
         filename: "[name].js"
     }
 }
