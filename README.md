@@ -1,6 +1,6 @@
 # MSWP
 
-Fast minesweeper solver library and TAS extension for Google Minesweeper
+Fast minesweeper solver library and TAS chrome extension for Google Minesweeper
 
 ## Demo - 0sec Hard
 ![0sec-hard](https://github.com/vlin02/mswp/assets/41597231/0364021d-0682-4d24-976b-cf99bf68dfd0)
